@@ -107,7 +107,7 @@ public class OrderService {
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                createOrder(resultSet);
+                orderList.add(createOrder(resultSet));
             }
             return orderList;
         } catch (SQLException e) {

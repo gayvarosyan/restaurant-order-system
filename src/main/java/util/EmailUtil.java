@@ -2,7 +2,7 @@ package util;
 
 import exception.WrongEmailException;
 
-public abstract class CheckEmailUtil {
+public abstract class EmailUtil {
 
     public static String isValidEmail(String email) throws WrongEmailException {
         if(checkEmail(email)) {

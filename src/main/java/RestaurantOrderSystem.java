@@ -4,7 +4,7 @@ import service.CustomerService;
 import service.DishService;
 import service.OrderItemService;
 import service.OrderService;
-import util.CheckEmailUtil;
+import util.EmailUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -152,28 +152,41 @@ public class RestaurantOrderSystem implements Commands {
             System.out.println(customers);
             System.out.println("Please enter the customer ID");
             int customerId = Integer.parseInt(scanner.nextLine());
+
             Order order = new Order();
             order.setCustomer(customerService.getCustomerById(customerId));
             order.setTotalPrice(0);
+            order.setStatus(Status.PENDING);
+
+            orderService.addOrder(order);
+
             boolean addMore = true;
             double totalPrice = 0;
+
             while (addMore) {
                 OrderItem orderItem = new OrderItem();
-                orderItem.setOrder(orderService.addOrder(order));
+                orderItem.setOrder(order);
+
                 System.out.println("Please input dish id: ");
                 int dishId = Integer.parseInt(scanner.nextLine());
                 Dish dish = dishService.getDishById(dishId);
                 orderItem.setDish(dish);
+
                 System.out.println("Please input quantity: ");
                 int quantity = Integer.parseInt(scanner.nextLine());
+                orderItem.setQuantity(quantity);
                 orderItem.setPrice(dish.getPrice());
+
                 orderItemService.addOrderItem(orderItem);
+
                 totalPrice += (quantity * dish.getPrice());
+
                 System.out.println("Do you want to add another dish? y/n");
                 if (scanner.nextLine().equalsIgnoreCase("n")) {
                     addMore = false;
                 }
             }
+
             order.setTotalPrice(totalPrice);
             orderService.updateOrder(order);
             System.out.println("Order has been added!");
@@ -203,7 +216,7 @@ public class RestaurantOrderSystem implements Commands {
             System.out.println("Please input email email: ");
             email = scanner.nextLine();
             try {
-                CheckEmailUtil.isValidEmail(email);
+                EmailUtil.isValidEmail(email);
                 isValidEmail = true;
             } catch (WrongEmailException e) {
                 System.out.println(e.getMessage());
